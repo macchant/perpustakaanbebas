@@ -1,14 +1,17 @@
 backend:
-  name: git-gateway
+  name: github
+  repo: macchant/perpustakaanbebas
   branch: main
+  commit_message: "Update books via CMS"
+  open_authoring: false
 
 media_folder: "covers"
 public_folder: "covers"
 
 locale: "id"
 
-site_url: https://bebasbaca.netlify.app/
-display_url: https://bebasbaca.netlify.app/
+site_url: https://bebasbaca.netlify.app
+display_url: https://bebasbaca.netlify.app
 logo_url: ""
 
 collections:
