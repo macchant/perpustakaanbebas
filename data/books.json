@@ -1,0 +1,31 @@
+{
+  "books": [
+    {
+      "id": "membangun-kembali-hidup",
+      "title": "Membangun Kembali Hidup",
+      "author": "Tim Yayasan Harapan",
+      "category": "inspirasi",
+      "description": "Panduan praktis untuk memulai kembali setelah masa sulit. Berisi langkah-langkah konkret untuk membangun rutinitas, hubungan, dan tujuan baru.\n\nBuku ini cocok untuk siapa saja yang sedang berada di titik balik hidup dan membutuhkan peta sederhana untuk melangkah maju.",
+      "cover": "covers/sample-1.svg",
+      "pdf_url": "https://www.africau.edu/images/default/sample.pdf"
+    },
+    {
+      "id": "keterampilan-kerja-dasar",
+      "title": "Keterampilan Kerja Dasar",
+      "author": "Pusat Pelatihan Mandiri",
+      "category": "keterampilan",
+      "description": "Buku panduan untuk mempersiapkan diri memasuki dunia kerja. Mulai dari membuat CV, menghadapi wawancara, hingga membangun etos kerja yang baik.\n\nDilengkapi dengan ilustrasi dan contoh nyata yang mudah dipahami.",
+      "cover": "covers/sample-2.svg",
+      "pdf_url": "https://www.africau.edu/images/default/sample.pdf"
+    },
+    {
+      "id": "memulai-usaha-kecil",
+      "title": "Memulai Usaha Kecil dari Nol",
+      "author": "Komunitas Wirausaha Indonesia",
+      "category": "kewirausahaan",
+      "description": "Panduan lengkap untuk memulai bisnis kecil dengan modal terbatas. Mencakup ide usaha, manajemen keuangan sederhana, hingga strategi pemasaran lokal.",
+      "cover": "covers/sample-3.svg",
+      "pdf_url": "https://www.africau.edu/images/default/sample.pdf"
+    }
+  ]
+}

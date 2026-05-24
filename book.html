@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5" />
+<meta name="theme-color" content="#3F6B4D" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<title>Membaca... — Perpustakaan Bebas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="dns-prefetch" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&display=swap" rel="stylesheet" crossorigin="anonymous">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+// Sync dark mode across pages - must run before Tailwind
+(function(){
+  const saved = localStorage.getItem('theme');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  if (saved === 'dark' || (!saved && prefersDark)) {
+    document.documentElement.classList.add('dark');
+  }
+})();
+</script>
+<script>
+tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{sans:['"Plus Jakarta Sans"','sans-serif'],serif:['"Fraunces"','Georgia','serif']},colors:{paper:'#FAFAF7',ink:'#1A1A1A','ink-2':'#4A4A47','ink-3':'#7A7A75',line:'#E8E6DF',accent:'#3F6B4D','accent-soft':'#E8F0EA','accent-deep':'#2D5238',dark:'#121212','dark-2':'#1E1E1E','dark-3':'#2A2A2A','dark-line':'#3A3A3A',}}}}
+</script>
+<style>
+:root{--bg:#FAFAF7;--bg-2:#FFFFFF;--text:#1A1A1A;--text-2:#4A4A47;--text-3:#7A7A75;--border:#E8E6DF;--accent:#3F6B4D;--accent-soft:#E8F0EA;--accent-deep:#2D5238}
+.dark{--bg:#121212;--bg-2:#1E1E1E;--text:#E8E6DF;--text-2:#A0A0A0;--text-3:#707070;--border:#3A3A3A;--accent:#5A9E6F;--accent-soft:#1E2E24;--accent-deep:#4A8A5F}
+body{background:var(--bg);color:var(--text);transition:background .3s,color .3s}
+.border-line{border-color:var(--border)!important}
+.bg-paper{background:var(--bg)!important}
+.bg-white{background:var(--bg-2)!important}
+.text-ink{color:var(--text)!important}
+.text-ink-2{color:var(--text-2)!important}
+.text-ink-3{color:var(--text-3)!important}
+.hover\:text-ink:hover{color:var(--text)!important}
+.hover\:text-ink-2:hover{color:var(--text-2)!important}
+.hover\:text-ink-3:hover{color:var(--text-3)!important}
+.hover\:border-ink-3:hover{border-color:var(--text-3)!important}
+.serif-italic{font-family:'Fraunces',Georgia,serif;font-style:italic;font-weight:500}
+/* PDF Reader container - always dark for readability */
+#pdfContainer{background:#1E1E1E;min-height:80vh;overflow-x:hidden}
+.dark #pdfContainer{background:#0D0D0D}
+#pdfContainer canvas{display:block;margin:0 auto;max-width:100%;height:auto;box-shadow:0 4px 16px rgba(0,0,0,0.4)}
+.toolbar-btn{padding:8px 12px;border-radius:6px;color:#E8E6DF;font-size:13px;display:inline-flex;align-items:center;gap:4px;cursor:pointer;border:none;background:transparent;transition:background .15s,transform .1s}
+.toolbar-btn:hover{background:rgba(255,255,255,0.12)}
+.toolbar-btn:disabled{opacity:.35;cursor:not-allowed;pointer-events:none}
+.toolbar-btn:active{transform:scale(.95)}
+@media(max-width:640px){.mobile-toolbar{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;gap:4px}.mobile-toolbar::-webkit-scrollbar{display:none}.toolbar-btn{padding:10px 14px;font-size:14px}}
+/* Dark mode toggle in header */
+#darkModeBtn{width:36px;height:36px;display:flex;align-items:center;justify-center;border-radius:8px;border:none;background:transparent;color:var(--text-2);cursor:pointer;transition:background .15s,color .15s}
+#darkModeBtn:hover{background:var(--accent-soft);color:var(--text)}
+.dark #darkModeBtn{color:var(--text-3)}
+.dark #darkModeBtn:hover{color:var(--text)}
+</style>
+</head>
+<body class="font-sans antialiased">
+
+<header class="border-b border-line bg-paper sticky top-0 z-30">
+  <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
+    <div class="flex items-center gap-2">
+      <a href="/" class="flex items-center gap-2 text-sm text-ink-2 hover:text-ink">
+        <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path d="M9.7 16.7a1 1 0 01-1.4 0l-6-6a1 1 0 010-1.4l6-6a1 1 0 011.4 1.4L5.4 9H17a1 1 0 110 2H5.4l4.3 4.3a1 1 0 010 1.4z"/></svg>
+        Kembali
+      </a>
+    </div>
+    <div class="flex items-center gap-2">
+      <button id="darkModeBtn" aria-label="Toggle dark mode">
+        <svg id="sunIcon" class="w-[18px] h-[18px] hidden" viewBox="0 0 20 20" fill="currentColor"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"/></svg>
+        <svg id="moonIcon" class="w-[18px] h-[18px]" viewBox="0 0 20 20" fill="currentColor"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/></svg>
+      </button>
+      <a href="/admin/" class="text-xs text-ink-3 hover:text-ink-2">Admin</a>
+    </div>
+  </div>
+</header>
+
+<main id="bookContent" class="max-w-6xl mx-auto px-4 sm:px-5 py-8 sm:py-10">
+  <div class="text-center py-20 text-ink-3">
+    <div class="inline-block w-8 h-8 border-2 border-current border-t-transparent rounded-full animate-spin mb-4"></div>
+    <p>Memuat buku...</p>
+  </div>
+</main>
+
+<template id="bookTemplate">
+  <div class="grid lg:grid-cols-12 gap-6 sm:gap-8 mb-8">
+    <div class="lg:col-span-3">
+      <div class="aspect-[1/1.4] rounded-xl overflow-hidden border border-line">
+        <img data-cover class="w-full h-full object-cover" alt="">
+      </div>
+    </div>
+    <div class="lg:col-span-9">
+      <div data-category class="text-xs uppercase tracking-[0.2em] font-semibold mb-2" style="color:var(--accent)"></div>
+      <h1 data-title class="font-serif text-2xl sm:text-3xl lg:text-4xl font-normal mb-2" style="color:var(--text)"></h1>
+      <p data-author class="mb-4" style="color:var(--text-2)"></p>
+      <p data-description class="leading-relaxed mb-6 whitespace-pre-line" style="color:var(--text-2)"></p>
+      <div class="flex flex-wrap gap-2 sm:gap-3">
+        <a data-download href="#" target="_blank" rel="noopener" class="inline-flex items-center gap-2 font-semibold px-4 sm:px-5 py-2 sm:py-2.5 rounded-lg text-white text-sm" style="background:var(--text)">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3"/></svg>
+          Unduh PDF
+        </a>
+        <button id="fullscreenBtn" class="inline-flex items-center gap-2 font-semibold px-4 sm:px-5 py-2 sm:py-2.5 rounded-lg text-sm border" style="border-color:var(--border);color:var(--text-2)">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4h4M16 4h4v4M4 16v4h4M16 20h4v-4"/></svg>
+          Layar Penuh
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reading Progress Bar -->
+  <div class="mb-4 flex items-center gap-3">
+    <div class="flex-1 h-1 rounded-full overflow-hidden" style="background:var(--border)">
+      <div id="progressBar" class="h-full rounded-full transition-all duration-300" style="background:var(--accent);width:0%"></div>
+    </div>
+    <span id="progressText" class="text-xs shrink-0" style="color:var(--text-3)">0%</span>
+  </div>
+
+  <div id="readerWrap" class="rounded-xl overflow-hidden border" style="border-color:var(--border)">
+    <div class="text-white px-3 py-2 sm:px-4 sm:py-3 mobile-toolbar flex items-center justify-between gap-2" style="background:#1E1E1E">
+      <div class="flex items-center gap-1 sm:gap-2 shrink-0">
+        <button id="prevBtn" class="toolbar-btn" aria-label="Halaman sebelumnya">
+          <svg class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor"><path d="M12.7 5.3a1 1 0 010 1.4L9.4 10l3.3 3.3a1 1 0 01-1.4 1.4l-4-4a1 1 0 010-1.4l4-4a1 1 0 011.4 0z"/></svg>
+        </button>
+        <div class="flex items-center gap-1.5 text-sm">
+          <input id="pageInput" type="number" min="1" class="w-12 sm:w-14 bg-white/10 border border-white/20 rounded text-center text-sm py-1" aria-label="Nomor halaman">
+          <span class="text-white/50">dari</span>
+          <span id="pageTotal" class="min-w-[2ch]">—</span>
+        </div>
+        <button id="nextBtn" class="toolbar-btn" aria-label="Halaman berikutnya">
+          <svg class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor"><path d="M7.3 14.7a1 1 0 010-1.4l3.3-3.3-3.3-3.3a1 1 0 011.4-1.4l4 4a1 1 0 010 1.4l-4 4a1 1 0 01-1.4 0z"/></svg>
+        </button>
+      </div>
+      <div class="flex items-center gap-1 sm:gap-2 shrink-0">
+        <button id="zoomOutBtn" class="toolbar-btn" aria-label="Perkecil" title="Perkecil">−</button>
+        <span id="zoomLabel" class="text-xs sm:text-sm text-white/60 min-w-[3em] text-center select-none">100%</span>
+        <button id="zoomInBtn" class="toolbar-btn" aria-label="Perbesar" title="Perbesar">+</button>
+        <span class="text-white/20 hidden sm:inline">|</span>
+        <button id="zoomFitBtn" class="toolbar-btn text-xs hidden sm:inline-flex" title="Sesuaikan lebar">Sesuaikan</button>
+      </div>
+    </div>
+    <div id="pdfContainer" tabindex="0" role="document" aria-label="Dokumen PDF"></div>
+  </div>
+  <div id="swipeHint" class="fixed bottom-6 left-1/2 -translate-x-1/2 text-white text-xs px-4 py-2 rounded-full pointer-events-none transition-opacity duration-500 z-20 hidden" style="background:rgba(26,26,26,0.92)">Geser kiri/kanan untuk ganti halaman</div>
+</template>
+
+<!-- PDF.js v4 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.min.js"></script>
+<script>
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.worker.min.js';
+
+(function(){
+  // === Dark Mode ===
+  const html = document.documentElement;
+  const darkBtn = document.getElementById('darkModeBtn');
+  const sunIcon = document.getElementById('sunIcon');
+  const moonIcon = document.getElementById('moonIcon');
+  const saved = localStorage.getItem('theme');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  if (saved === 'dark' || (!saved && prefersDark)) {
+    html.classList.add('dark');
+    sunIcon.classList.remove('hidden');
+    moonIcon.classList.add('hidden');
+  }
+  darkBtn.addEventListener('click', () => {
+    const isDark = html.classList.toggle('dark');
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    sunIcon.classList.toggle('hidden', !isDark);
+    moonIcon.classList.toggle('hidden', isDark);
+  });
+
+  // === PDF Reader ===
+  const params = new URLSearchParams(window.location.search);
+  const bookId = params.get('id');
+  let pdfDoc = null;
+  let currentPage = 1;
+  let zoom = 1.0;
+  let pageCache = new Map();
+  let renderQueue = null;
+  let touchStartX = 0, touchStartY = 0, isScrolling = false;
+
+  function normalizePdfUrl(url){
+    if (!url) return '';
+    const match = url.match(/drive\.google\.com\/file\/d\/([^/?]+)/);
+    return match ? `https://drive.google.com/uc?export=download&id=${match[1]}` : url;
+  }
+
+  async function init(){
+    if (!bookId){ showError('Buku tidak ditemukan.'); return; }
+    try {
+      const res = await fetch('data/books.json');
+      const data = await res.json();
+      const book = (data.books || []).find(b => b.id === bookId);
+      if (!book){ showError('Buku tidak ditemukan.'); return; }
+      renderBook(book);
+    } catch(e){ showError('Gagal memuat data buku.'); }
+  }
+
+  function showError(msg){ document.getElementById('bookContent').innerHTML = `<p class="text-center py-20" style="color:var(--text-3)">${msg}</p>`; }
+
+  function renderBook(book){
+    const CATEGORIES = {keterampilan:'Keterampilan Kerja',kewirausahaan:'Kewirausahaan','kesehatan-mental':'Kesehatan Mental',keluarga:'Keluarga & Hubungan',spiritual:'Spiritual',hukum:'Hukum & Hak',pendidikan:'Pendidikan',inspirasi:'Cerita & Inspirasi'};
+    const tpl = document.getElementById('bookTemplate').content.cloneNode(true);
+    tpl.querySelector('[data-cover]').src = book.cover || '';
+    tpl.querySelector('[data-cover]').alt = book.title || '';
+    tpl.querySelector('[data-cover]').loading = 'eager';
+    tpl.querySelector('[data-category]').textContent = CATEGORIES[book.category] || '';
+    tpl.querySelector('[data-title]').textContent = book.title || 'Tanpa Judul';
+    tpl.querySelector('[data-author]').textContent = book.author ? `Oleh ${book.author}` : '';
+    tpl.querySelector('[data-description]').textContent = book.description || '';
+    const pdfUrl = normalizePdfUrl(book.pdf_url);
+    tpl.querySelector('[data-download]').href = pdfUrl;
+    document.title = `${book.title} — Perpustakaan Bebas`;
+    document.getElementById('bookContent').innerHTML = '';
+    document.getElementById('bookContent').appendChild(tpl);
+    bindControls();
+    loadPdf(pdfUrl);
+  }
+
+  async function loadPdf(url){
+    const container = document.getElementById('pdfContainer');
+    container.innerHTML = '<div class="flex items-center justify-center min-h-[60vh]"><div class="text-center"><div class="inline-block w-8 h-8 border-2 border-white/20 border-t-white rounded-full animate-spin mb-3"></div><p class="text-white/60 text-sm">Memuat dokumen...</p></div></div>';
+    try {
+      pdfDoc = await pdfjsLib.getDocument({
+        url: url,
+        cMapUrl: 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.10.38/cmaps/',
+        cMapPacked: true
+      }).promise;
+      document.getElementById('pageTotal').textContent = pdfDoc.numPages;
+      const saved = parseInt(localStorage.getItem(`book-${bookId}-page`) || '1', 10);
+      currentPage = Math.min(Math.max(1, saved), pdfDoc.numPages);
+      document.getElementById('pageInput').value = currentPage;
+      if (window.innerWidth < 640) fitWidthMobile();
+      else fitWidth();
+      showSwipeHint();
+    } catch(e){
+      container.innerHTML = `<div class="text-center py-16 px-4"><p class="text-white/90 mb-1">Gagal memuat PDF.</p><p class="text-white/50 text-xs">Pastikan link PDF dapat diakses secara publik.</p></div>`;
+    }
+  }
+
+  function showSwipeHint(){
+    const hint = document.getElementById('swipeHint');
+    if (localStorage.getItem('swipeHintShown2')) return;
+    hint.classList.remove('hidden');
+    setTimeout(() => { hint.style.opacity = '0'; setTimeout(() => hint.remove(), 500); }, 4000);
+    localStorage.setItem('swipeHintShown2', '1');
+  }
+
+  function updateProgress(){
+    if (!pdfDoc) return;
+    const pct = Math.round((currentPage / pdfDoc.numPages) * 100);
+    const bar = document.getElementById('progressBar');
+    const text = document.getElementById('progressText');
+    if (bar) bar.style.width = pct + '%';
+    if (text) text.textContent = pct + '%';
+  }
+
+  async function renderPage(num){
+    if (!pdfDoc) return;
+    const container = document.getElementById('pdfContainer');
+    if (renderQueue) renderQueue.cancel = true;
+    const task = { cancel: false };
+    renderQueue = task;
+    try {
+      if (pageCache.has(num) && pageCache.get(num).zoom === Math.round(zoom * 100)) {
+        const cached = pageCache.get(num);
+        container.innerHTML = '';
+        container.appendChild(cached.canvas.cloneNode(true));
+      } else {
+        const page = await pdfDoc.getPage(num);
+        const baseViewport = page.getViewport({ scale: 1 });
+        const containerWidth = container.clientWidth - 24;
+        const targetZoom = Math.min(containerWidth / baseViewport.width, 1.8);
+        const actualZoom = Math.round(targetZoom * 100) / 100;
+        const viewport = page.getViewport({ scale: actualZoom * 1.5 });
+        const canvas = document.createElement('canvas');
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        const ctx = canvas.getContext('2d', { alpha: false });
+        ctx.fillStyle = '#FAFAF7';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        container.innerHTML = '';
+        container.appendChild(canvas);
+        if (task.cancel) return;
+        await page.render({ canvasContext: ctx, viewport }).promise;
+        if (task.cancel) return;
+        if (pageCache.size > 5) {
+          const oldestKey = pageCache.keys().next().value;
+          if (Math.abs(oldestKey - currentPage) > 3) pageCache.delete(oldestKey);
+        }
+        pageCache.set(num, { canvas: canvas.cloneNode(true), zoom: Math.round(actualZoom * 100) });
+      }
+      document.getElementById('pageInput').value = num;
+      localStorage.setItem(`book-${bookId}-page`, num);
+      updateProgress();
+      if (currentPage > 1) { const prev = pageCache.get(currentPage - 1); if (!prev) prefetchPage(currentPage - 1); }
+      if (currentPage < pdfDoc.numPages) { const next = pageCache.get(currentPage + 1); if (!next) prefetchPage(currentPage + 1); }
+    } catch(e) { if (!task.cancel) console.warn('Render error:', e); }
+  }
+
+  async function prefetchPage(num){
+    if (pageCache.has(num) || !pdfDoc) return;
+    try {
+      const page = await pdfDoc.getPage(num);
+      const viewport = page.getViewport({ scale: 0.7 });
+      const canvas = document.createElement('canvas');
+      canvas.width = viewport.width;
+      canvas.height = viewport.height;
+      const ctx = canvas.getContext('2d', { alpha: false });
+      ctx.fillStyle = '#FAFAF7';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      await page.render({ canvasContext: ctx, viewport }).promise;
+      pageCache.set(num, { canvas, zoom: 70 });
+    } catch(e) {}
+  }
+
+  function fitWidth(){
+    if (!pdfDoc) return;
+    pdfDoc.getPage(currentPage).then(p => {
+      const baseViewport = p.getViewport({ scale: 1 });
+      const containerWidth = document.getElementById('pdfContainer').clientWidth - 24;
+      zoom = Math.min(containerWidth / baseViewport.width, 2);
+      updateZoomLabel();
+      renderPage(currentPage);
+    });
+  }
+
+  function fitWidthMobile(){
+    if (!pdfDoc) return;
+    pdfDoc.getPage(currentPage).then(p => {
+      const baseViewport = p.getViewport({ scale: 1 });
+      const containerWidth = Math.min(window.innerWidth, 600) - 24;
+      zoom = Math.min(containerWidth / baseViewport.width, 1.4);
+      updateZoomLabel();
+      renderPage(currentPage);
+    });
+  }
+
+  function updateZoomLabel(){ document.getElementById('zoomLabel').textContent = Math.round(zoom * 100) + '%'; }
+
+  function bindControls(){
+    document.getElementById('prevBtn').onclick = () => { if (currentPage > 1){ currentPage--; renderPage(currentPage); } };
+    document.getElementById('nextBtn').onclick = () => { if (pdfDoc && currentPage < pdfDoc.numPages){ currentPage++; renderPage(currentPage); } };
+    const pageInput = document.getElementById('pageInput');
+    pageInput.onchange = (e) => {
+      const n = parseInt(e.target.value, 10);
+      if (pdfDoc && n >= 1 && n <= pdfDoc.numPages){ currentPage = n; renderPage(n); }
+      else pageInput.value = currentPage;
+    };
+    document.getElementById('zoomInBtn').onclick = () => { zoom = Math.min(zoom + 0.2, 3); updateZoomLabel(); renderPage(currentPage); };
+    document.getElementById('zoomOutBtn').onclick = () => { zoom = Math.max(zoom - 0.2, 0.4); updateZoomLabel(); renderPage(currentPage); };
+    document.getElementById('zoomFitBtn').onclick = fitWidth;
+    document.getElementById('fullscreenBtn').onclick = () => {
+      const el = document.getElementById('readerWrap');
+      if (!document.fullscreenElement) el.requestFullscreen?.();
+      else document.exitFullscreen?.();
+    };
+    const container = document.getElementById('pdfContainer');
+    container.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; touchStartY = e.touches[0].clientY; isScrolling = false; }, { passive: true });
+    container.addEventListener('touchmove', e => { const dx = Math.abs(e.touches[0].clientX - touchStartX); const dy = Math.abs(e.touches[0].clientY - touchStartY); if (dy > dx) isScrolling = true; }, { passive: true });
+    container.addEventListener('touchend', e => {
+      if (isScrolling) return;
+      const dx = e.changedTouches[0].clientX - touchStartX;
+      if (Math.abs(dx) > 50) {
+        if (dx < 0 && currentPage < pdfDoc.numPages) { currentPage++; renderPage(currentPage); }
+        else if (dx > 0 && currentPage > 1) { currentPage--; renderPage(currentPage); }
+      }
+    }, { passive: true });
+    document.addEventListener('keydown', e => {
+      if (e.target.tagName === 'INPUT') return;
+      if (e.key === 'ArrowLeft' || e.key === 'PageUp') document.getElementById('prevBtn').click();
+      if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') document.getElementById('nextBtn').click();
+      if (e.key === 'Home') { currentPage = 1; renderPage(currentPage); }
+      if (e.key === 'End' && pdfDoc) { currentPage = pdfDoc.numPages; renderPage(currentPage); }
+      if (e.key === '+' || e.key === '=') document.getElementById('zoomInBtn').click();
+      if (e.key === '-') document.getElementById('zoomOutBtn').click();
+    });
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => { if (window.innerWidth < 640) fitWidthMobile(); else fitWidth(); }, 150);
+    });
+  }
+
+  init();
+})();
+
+// Service Worker Registration
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js').then(reg => {
+    reg.addEventListener('updatefound', () => {
+      const worker = reg.installing;
+      worker.addEventListener('statechange', () => {
+        if (worker.state === 'installed' && navigator.serviceWorker.controller) {
+          if (confirm('Versi baru tersedia. Refresh untuk update?')) location.reload();
+        }
+      });
+    });
+  }).catch(err => console.log('SW registration failed:', err));
+}
+</script>
+</body>
+</html>

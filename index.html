@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#3F6B4D" />
+<meta name="description" content="Perpustakaan digital gratis. Buku-buku bermanfaat untuk kehidupan yang lebih baik." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="dns-prefetch" href="https://fonts.gstatic.com">
+<link rel="dns-prefetch" href="https://cdn.tailwindcss.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&display=swap" rel="stylesheet" crossorigin="anonymous">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+// Sync dark mode across pages
+(function(){
+  const saved = localStorage.getItem('theme');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  if (saved === 'dark' || (!saved && prefersDark)) {
+    document.documentElement.classList.add('dark');
+  }
+})();
+</script>
+<script>
+tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{sans:['"Plus Jakarta Sans"','sans-serif'],serif:['"Fraunces"','Georgia','serif']},colors:{paper:'#FAFAF7',ink:'#1A1A1A','ink-2':'#4A4A47','ink-3':'#7A7A75',line:'#E8E6DF',accent:'#3F6B4D','accent-soft':'#E8F0EA','accent-deep':'#2D5238',dark:'#121212','dark-2':'#1E1E1E','dark-3':'#2A2A2A','dark-line':'#3A3A3A','dark-text':'#E8E6DF','dark-text-2':'#A0A0A0','dark-text-3':'#707070'}}}}
+</script>
+<style>
+:root{
+  --bg:#FAFAF7;--bg-2:#FFFFFF;--text:#1A1A1A;--text-2:#4A4A47;--text-3:#7A7A75;--border:#E8E6DF;--accent:#3F6B4D;--accent-soft:#E8F0EA;--accent-deep:#2D5238;--cover-bg:#F0EDE5;--hover-shadow:0 16px 40px -10px rgba(0,0,0,0.18)
+}
+.dark{
+  --bg:#121212;--bg-2:#1E1E1E;--text:#E8E6DF;--text-2:#B8B8B8;--text-3:#888888;--border:#3A3A3A;--accent:#5A9E6F;--accent-soft:#1E2E24;--accent-deep:#4A8A5F;--cover-bg:#2A2A28;--hover-shadow:0 16px 40px -10px rgba(0,0,0,0.5)
+}
+body{background:var(--bg);color:var(--text);transition:background .3s,color .3s}
+.border-line,.border-line\/90{border-color:var(--border)!important}
+.bg-paper,.bg-paper\/90{background:var(--bg)!important}
+.text-ink{color:var(--text)!important}
+.text-ink-2{color:var(--text-2)!important}
+.text-ink-3{color:var(--text-3)!important}
+.bg-accent,.hover\:bg-accent:hover{background:var(--accent)!important}
+.hover\:bg-accent-deep:hover{background:var(--accent-deep)!important}
+.hover\:bg-accent-soft:hover{background:var(--accent-soft)!important}
+.text-accent{color:var(--accent)!important}
+.bg-accent-soft{background:var(--accent-soft)!important}
+.text-accent-deep{color:var(--accent-deep)!important}
+.border-accent{border-color:var(--accent)!important}
+.hover\:text-accent:hover{color:var(--accent)!important}
+.hover\:text-accent-deep:hover{color:var(--accent-deep)!important}
+.hover\:text-ink:hover{color:var(--text)!important}
+.hover\:text-ink-2:hover{color:var(--text-2)!important}
+.hover\:text-ink-3:hover{color:var(--text-3)!important}
+.border-ink-3{border-color:var(--text-3)!important}
+.hover\:border-ink-3:hover{border-color:var(--text-3)!important}
+.hover\:border-accent:hover{border-color:var(--accent)!important}
+.serif-italic{font-family:'Fraunces',Georgia,serif;font-style:italic;font-weight:500}
+.book-card{will-change:transform}
+.book-card:hover .book-cover{transform:translateY(-6px);box-shadow:var(--hover-shadow)}
+.book-card:active .book-cover{transform:translateY(-2px);transition-duration:.1s}
+.book-cover{background:var(--cover-bg);transition:transform .3s cubic-bezier(.25,.46,.45,.94),box-shadow .3s ease,background .3s;aspect-ratio:1/1.4;will-change:transform}
+.filter-chip.active{background:var(--accent);color:white!important;border-color:var(--accent)}
+.filter-chip{background:var(--bg);color:var(--text-2);border-color:var(--border);transition:all .2s}
+.filter-chip:hover{border-color:var(--text-3)}
+.filter-chip:active{transform:scale(.96)}
+.bg-white,.bg-white\/10{background:var(--bg-2)!important}
+input,input::placeholder{background:var(--bg-2)!important;color:var(--text)!important;border-color:var(--border)}
+input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(63,107,77,.15)}
+/* CTA Buttons - high contrast for both modes */
+.bg-ink{background:#1A1A1A!important;color:#FFFFFF!important}
+.dark .bg-ink{background:#E8E6DF!important;color:#121212!important}
+.hover\:bg-black:hover{background:#1A1A1A!important}
+.dark .hover\:bg-black:hover{background:#E8E6DF!important;color:#121212!important}
+/* Hero CTA text */
+a[href="#perpustakaan"].bg-ink{color:#FFFFFF!important}
+.dark a[href="#perpustakaan"].bg-ink{color:#121212!important;font-weight:600}
+.skeleton{background:var(--border);animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+@media(max-width:640px){.book-cover{aspect-ratio:3/4}}
+#offlineBanner{display:none}
+.dark #offlineBanner .banner-dark{display:inline}
+.light #offlineBanner .banner-light{display:inline}
+</style>
+</head>
+<body class="font-sans antialiased">
+
+<header id="offlineBanner" class="hidden bg-amber-100 dark:bg-amber-900 text-amber-800 dark:text-amber-200 text-center text-sm py-2 px-4">
+  <span class="banner-light inline">Offline — Membaca dari cache</span>
+  <span class="banner-dark hidden inline">Offline — Membaca dari cache</span>
+</header>
+
+<header class="border-b border-line bg-paper/90 backdrop-blur sticky top-0 z-30">
+  <div class="max-w-6xl mx-auto px-5 py-3 flex items-center justify-between gap-3">
+    <a href="/" class="flex items-center gap-2 shrink-0">
+      <div class="w-8 h-8 rounded-md bg-accent flex items-center justify-center text-white font-bold text-sm">PB</div>
+      <span class="font-semibold hidden sm:inline">Perpustakaan Bebas</span>
+    </a>
+    <nav class="hidden md:flex items-center gap-6 text-sm text-ink-2">
+      <a href="#perpustakaan" class="hover:text-ink">Buku</a>
+      <a href="#tentang" class="hover:text-ink">Tentang</a>
+      <a href="#kontak" class="hover:text-ink">Kontak</a>
+    </nav>
+    <div class="flex items-center gap-2">
+      <button id="darkModeBtn" aria-label="Toggle dark mode" class="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-accent-soft text-ink-2 hover:text-ink transition-colors">
+        <svg id="sunIcon" class="w-5 h-5 hidden" viewBox="0 0 20 20" fill="currentColor"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"/></svg>
+        <svg id="moonIcon" class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/></svg>
+      </button>
+      <a href="#perpustakaan" class="text-sm font-semibold bg-accent hover:bg-accent-deep text-white px-4 py-2 rounded-lg shrink-0">Mulai Baca</a>
+    </div>
+  </div>
+</header>
+
+<section class="border-b border-line">
+  <div class="max-w-6xl mx-auto px-5 py-16 lg:py-24">
+    <div class="text-xs uppercase tracking-[0.2em] text-accent font-semibold mb-5">Perpustakaan Digital · Gratis</div>
+    <h1 class="font-serif text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight font-normal mb-6 max-w-3xl">
+      Pengetahuan untuk <span class="serif-italic text-accent">awal yang baru.</span>
+    </h1>
+    <p class="text-lg text-ink-2 leading-relaxed max-w-2xl mb-8">
+      Kumpulan buku-buku bermanfaat — keterampilan kerja, kewirausahaan, kesehatan mental, dan kisah inspiratif.
+      Baca online di sini atau unduh kapan saja. <strong class="text-ink">Sepenuhnya gratis, tanpa registrasi.</strong>
+    </p>
+    <div class="flex flex-wrap gap-3 mb-10">
+      <a href="#perpustakaan" class="bg-ink hover:bg-black text-white font-semibold px-6 py-3 rounded-lg inline-flex items-center gap-2">
+        Lihat semua buku
+        <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path d="M10.3 3.3a1 1 0 011.4 0l6 6a1 1 0 010 1.4l-6 6a1 1 0 01-1.4-1.4L14.6 11H3a1 1 0 110-2h11.6l-4.3-4.3a1 1 0 010-1.4z"/></svg>
+      </a>
+      <a href="#tentang" class="border border-line hover:border-ink-3 text-ink-2 font-semibold px-6 py-3 rounded-lg">Tentang program</a>
+    </div>
+    <div class="flex items-center gap-6 text-sm text-ink-3">
+      <span><b class="text-ink" id="bookCount">—</b> buku tersedia</span>
+      <span class="w-px h-4 bg-line"></span><span>Tanpa registrasi</span>
+      <span class="w-px h-4 bg-line"></span><span>Tanpa biaya</span>
+    </div>
+  </div>
+</section>
+
+<section id="perpustakaan" class="border-b border-line">
+  <div class="max-w-6xl mx-auto px-5 py-16">
+    <div class="flex flex-wrap items-end justify-between gap-4 mb-8">
+      <div>
+        <div class="text-xs uppercase tracking-[0.2em] text-accent font-semibold mb-2">Perpustakaan</div>
+        <h2 class="font-serif text-3xl md:text-4xl font-normal">Semua Buku</h2>
+      </div>
+      <div class="relative w-full md:w-72">
+        <input id="searchInput" type="search" placeholder="Cari judul atau penulis..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" class="w-full border border-line rounded-xl px-4 py-3 text-sm focus:outline-none transition-shadow">
+        <svg class="absolute right-3 top-3.5 w-4 h-4 text-ink-3 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+      </div>
+    </div>
+
+    <div id="filterChips" class="flex flex-wrap gap-2 mb-10"></div>
+
+    <div id="bookGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10"></div>
+    <div id="emptyState" class="hidden text-center py-16 text-ink-3">
+      <p class="text-lg">Tidak ada buku ditemukan.</p>
+      <p class="text-sm mt-2">Coba kata kunci atau kategori lain.</p>
+    </div>
+  </div>
+</section>
+
+<section id="tentang" class="border-b border-line">
+  <div class="max-w-3xl mx-auto px-5 py-20">
+    <div class="text-xs uppercase tracking-[0.2em] text-accent font-semibold mb-4">Tentang Program</div>
+    <h2 class="font-serif text-3xl md:text-4xl font-normal mb-6">Setiap orang berhak atas <span class="serif-italic text-accent">awal yang baru.</span></h2>
+    <div class="space-y-4 text-ink-2 leading-relaxed">
+      <p>Perpustakaan Bebas adalah kumpulan buku-buku digital gratis yang dirancang untuk membantu siapa saja yang sedang membangun kembali hidupnya — terutama mereka yang baru kembali ke masyarakat setelah masa hukuman.</p>
+      <p>Buku-buku di sini dipilih untuk memberikan pengetahuan praktis: keterampilan kerja, kewirausahaan, kesehatan mental, hubungan keluarga, hak hukum, dan kisah-kisah inspiratif dari mereka yang telah berhasil memulai kembali.</p>
+      <p>Tidak ada biaya, tidak ada registrasi, tidak ada pelacakan. Hanya buku yang bisa dibaca dan diunduh oleh siapa saja, kapan saja.</p>
+    </div>
+  </div>
+</section>
+
+<footer class="">
+  <div class="max-w-6xl mx-auto px-5 py-10 text-center text-sm text-ink-3">
+    <p>© <span id="year"></span> Perpustakaan Bebas. Buku-buku di sini tersedia untuk dibaca dan dibagikan secara gratis.</p>
+    <p class="mt-2"><a href="/admin/" class="hover:text-ink">Admin</a></p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  const html = document.documentElement;
+  const darkBtn = document.getElementById('darkModeBtn');
+  const sunIcon = document.getElementById('sunIcon');
+  const moonIcon = document.getElementById('moonIcon');
+
+  // Load saved preference or system preference
+  const saved = localStorage.getItem('theme');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  if (saved === 'dark' || (!saved && prefersDark)) {
+    html.classList.add('dark');
+    sunIcon.classList.remove('hidden');
+    moonIcon.classList.add('hidden');
+  }
+
+  // Toggle handler
+  darkBtn.addEventListener('click', () => {
+    const isDark = html.classList.toggle('dark');
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    sunIcon.classList.toggle('hidden', !isDark);
+    moonIcon.classList.toggle('hidden', isDark);
+  });
+
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  const CATEGORIES = {
+    'all': 'Semua',
+    'keterampilan': 'Keterampilan Kerja',
+    'kewirausahaan': 'Kewirausahaan',
+    'kesehatan-mental': 'Kesehatan Mental',
+    'keluarga': 'Keluarga & Hubungan',
+    'spiritual': 'Spiritual',
+    'hukum': 'Hukum & Hak',
+    'pendidikan': 'Pendidikan',
+    'inspirasi': 'Cerita & Inspirasi'
+  };
+
+  let allBooks = [];
+  let activeCategory = 'all';
+  let searchQuery = '';
+
+  async function loadBooks(){
+    const grid = document.getElementById('bookGrid');
+    grid.innerHTML = '<div class="col-span-full grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10" id="skeletonGrid"></div>';
+    const skeleton = document.getElementById('skeletonGrid');
+    for (let i = 0; i < 8; i++) {
+      skeleton.innerHTML += `<div class="animate-pulse"><div class="aspect-[1/1.4] skeleton rounded-xl mb-3"></div><div class="h-3 skeleton rounded w-3/4 mb-2"></div><div class="h-4 skeleton rounded w-full mb-1"></div><div class="h-3 skeleton rounded w-1/2"></div></div>`;
+    }
+    try {
+      const res = await fetch('data/books.json');
+      const data = await res.json();
+      allBooks = data.books || [];
+      document.getElementById('bookCount').textContent = allBooks.length;
+      renderFilters();
+      renderBooks();
+    } catch(e){
+      document.getElementById('bookGrid').innerHTML = '<p class="col-span-full text-center text-ink-3 py-12">Gagal memuat data buku. Silakan muat ulang halaman.</p>';
+    }
+  }
+
+  let searchTimer = null;
+  document.getElementById('searchInput').addEventListener('input', e => {
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(() => { searchQuery = e.target.value; renderBooks(); }, 200);
+  });
+
+  function renderFilters(){
+    const used = new Set(['all']);
+    allBooks.forEach(b => b.category && used.add(b.category));
+    const container = document.getElementById('filterChips');
+    container.innerHTML = '';
+    Object.entries(CATEGORIES).filter(([k]) => used.has(k)).forEach(([key, label]) => {
+      const chip = document.createElement('button');
+      chip.className = `filter-chip text-sm px-4 py-1.5 rounded-full border`;
+      chip.textContent = label;
+      chip.onclick = () => { activeCategory = key; renderFilters(); renderBooks(); };
+      container.appendChild(chip);
+    });
+  }
+
+  function renderBooks(){
+    const grid = document.getElementById('bookGrid');
+    const empty = document.getElementById('emptyState');
+    const filtered = allBooks.filter(b => {
+      const matchesCategory = activeCategory === 'all' || b.category === activeCategory;
+      const q = searchQuery.toLowerCase().trim();
+      const matchesSearch = !q || b.title?.toLowerCase().includes(q) || b.author?.toLowerCase().includes(q);
+      return matchesCategory && matchesSearch;
+    });
+    if (filtered.length === 0){ grid.innerHTML = ''; empty.classList.remove('hidden'); return; }
+    empty.classList.add('hidden');
+
+    requestAnimationFrame(() => {
+      grid.innerHTML = filtered.map(b => {
+        const categoryLabel = CATEGORIES[b.category] || '';
+        const title = b.title || 'Tanpa Judul';
+        const author = b.author || '';
+        const hasCover = Boolean(b.cover);
+        return `<a href="book.html?id=${encodeURIComponent(b.id)}" class="book-card group" tabindex="0">
+          <div class="book-cover rounded-xl overflow-hidden border border-line mb-3">
+            ${hasCover
+              ? `<img src="${b.cover}" alt="${title}" class="w-full h-full object-cover" loading="lazy" decoding="async" onerror="this.parentElement.innerHTML='<div class=\\'w-full h-full flex items-center justify-center text-ink-3 text-xs p-4 text-center font-medium\\'>${title}</div>'">`
+              : `<div class="w-full h-full flex items-center justify-center text-ink-3 text-xs p-4 text-center font-medium">${title}</div>`
+            }
+          </div>
+          <div class="text-xs uppercase tracking-wider text-accent font-semibold mb-1">${categoryLabel}</div>
+          <h3 class="font-semibold leading-snug mb-0.5 group-hover:text-accent transition-colors">${title}</h3>
+          <p class="text-sm text-ink-3">${author}</p>
+        </a>`;
+      }).join('');
+
+      const cards = grid.querySelectorAll('.book-card');
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry, i) => {
+          if (entry.isIntersecting) {
+            entry.target.style.opacity = '0';
+            entry.target.style.transform = 'translateY(12px)';
+            setTimeout(() => {
+              entry.target.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+              entry.target.style.opacity = '1';
+              entry.target.style.transform = 'translateY(0)';
+            }, i * 30);
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.1, rootMargin: '50px' });
+      cards.forEach(card => observer.observe(card));
+    });
+  }
+
+  // Service Worker Registration
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js').then(reg => {
+      reg.addEventListener('updatefound', () => {
+        const worker = reg.installing;
+        worker.addEventListener('statechange', () => {
+          if (worker.state === 'installed' && navigator.serviceWorker.controller) {
+            // New version available
+            if (confirm('Versi baru tersedia. Refresh untuk update?')) location.reload();
+          }
+        });
+      });
+    }).catch(err => console.log('SW registration failed:', err));
+
+    // Offline detection
+    const banner = document.getElementById('offlineBanner');
+    const updateOnlineStatus = () => {
+      if (!navigator.onLine) {
+        banner.style.display = 'block';
+        document.getElementById('bookCount').parentElement.innerHTML = '<b class="text-ink">Cache</b> mode offline';
+      } else {
+        banner.style.display = 'none';
+      }
+    };
+    window.addEventListener('online', updateOnlineStatus);
+    window.addEventListener('offline', updateOnlineStatus);
+    updateOnlineStatus();
+  }
+
+  loadBooks();
+})();
+</script>
+</body>
+</html>

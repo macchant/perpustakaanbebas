@@ -1,0 +1,48 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "covers"
+public_folder: "covers"
+
+locale: "id"
+
+site_url: https://YOUR-SITE.netlify.app
+display_url: https://YOUR-SITE.netlify.app
+logo_url: ""
+
+collections:
+  - name: "books"
+    label: "Buku"
+    label_singular: "Buku"
+    description: "Kelola semua buku di perpustakaan. Tambah buku baru, edit, atau hapus."
+    files:
+      - file: "data/books.json"
+        label: "Daftar Buku"
+        name: "books"
+        format: "json"
+        fields:
+          - label: "Daftar Buku"
+            name: "books"
+            widget: "list"
+            label_singular: "Buku"
+            summary: "{{fields.title}} — {{fields.author}}"
+            fields:
+              - { label: "ID Unik (huruf kecil, tanpa spasi)", name: "id", widget: "string", hint: "Contoh: membangun-kembali-hidup. Jangan diubah setelah dipublikasikan." }
+              - { label: "Judul Buku", name: "title", widget: "string" }
+              - { label: "Penulis", name: "author", widget: "string", required: false }
+              - label: "Kategori"
+                name: "category"
+                widget: "select"
+                options:
+                  - { label: "Keterampilan Kerja", value: "keterampilan" }
+                  - { label: "Kewirausahaan", value: "kewirausahaan" }
+                  - { label: "Kesehatan Mental", value: "kesehatan-mental" }
+                  - { label: "Keluarga & Hubungan", value: "keluarga" }
+                  - { label: "Spiritual", value: "spiritual" }
+                  - { label: "Hukum & Hak", value: "hukum" }
+                  - { label: "Pendidikan", value: "pendidikan" }
+                  - { label: "Cerita & Inspirasi", value: "inspirasi" }
+              - { label: "Deskripsi", name: "description", widget: "text", hint: "Penjelasan singkat tentang isi buku. 2-3 paragraf." }
+              - { label: "Sampul Buku (Cover)", name: "cover", widget: "image", required: false, hint: "Upload gambar cover. Ukuran ideal: 600×840px. Format JPG atau PNG." }
+              - { label: "URL PDF", name: "pdf_url", widget: "string", hint: "Tempel link PDF. Bisa dari Google Drive, Internet Archive, atau hosting lain. Pastikan PDF dapat diakses publik." }
