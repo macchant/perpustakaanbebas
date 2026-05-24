@@ -1,168 +1,280 @@
 # Perpustakaan Bebas
 
-A free digital library of PDF books, designed for ex-incarcerated communities seeking practical knowledge for reentry. Static site + admin panel, free to host, easy to maintain by a non-technical user.
+<p align="center">
+  <img src="https://img.shields.io/badge/Status-Beta-orange" alt="Status">
+  <img src="https://img.shields.io/badge/License-MIT-blue" alt="License">
+  <img src="https://img.shields.io/badge/Powered%20by-Netlify-00C7B7?style=flat&logo=netlify" alt="Powered by Netlify">
+</p>
 
-## Stack
+<p align="center">
+  📚 Perpustakaan digital gratis untuk komunitas yang membutuhkan.<br>
+  Dibuat dengan ❤️ untuk mereka yang sedang memulai kembali.
+</p>
 
-- **Frontend:** Plain HTML + Tailwind (via CDN) + PDF.js
-- **CMS:** Decap CMS (with Netlify Identity for auth)
-- **Hosting:** Netlify free tier
-- **Storage:** PDFs hosted externally (Google Drive, Internet Archive, or any direct URL). Cover images stored in repo under `/covers/`.
+---
 
-## Project structure
+## 🎯 Tentang Project
 
+**Perpustakaan Bebas** adalah perpustakaan digital gratis yang dirancang untuk membantu siapa saja yang sedang membangun kembali hidupnya — terutama mereka yang baru kembali ke masyarakat setelah masa hukuman.
+
+Buku-buku di sini dipilih untuk memberikan pengetahuan praktis:
+- 💼 Keterampilan Kerja
+- 🚀 Kewirausahaan
+- 🧠 Kesehatan Mental
+- 👨‍👩‍👧 Keluarga & Hubungan
+- 🙏 Spiritual
+- ⚖️ Hukum & Hak
+- 📖 Pendidikan
+- ✨ Cerita & Inspirasi
+
+### ✨ Fitur
+
+| Fitur | Keterangan |
+|-------|------------|
+| 📖 Baca PDF Online | Viewer built-in, support zoom, swipe, keyboard navigation |
+| 🌙 Dark Mode | Nyaman untuk membaca di malam hari |
+| 📱 Mobile First | Dirancang untuk HP lawas sampai smartphone terbaru |
+| 🔍 Pencarian Cepat | Cari buku berdasarkan judul atau penulis |
+| 🏷️ Filter Kategori | Filter berdasarkan 8 kategori |
+| 📴 Offline Reading | PDF yang sudah dibaca tersimpan untuk offline |
+| ⭐ Reading Progress | Lanjut baca dari halaman terakhir |
+| 🔒 Privacy First | Tanpa tracking, tanpa login untuk pembaca |
+
+---
+
+## 🖼️ Tampilan
+
+### Homepage - Daftar Buku
 ```
-library/
-├── index.html              ← landing + library grid + filter + search
-├── book.html               ← book detail + embedded PDF reader
-├── admin/
-│   ├── index.html          ← Decap CMS entry
-│   └── config.yml          ← Decap collection schema
-├── covers/                 ← cover images (managed by CMS)
-├── data/
-│   └── books.json          ← book metadata (managed by CMS)
-├── netlify.toml            ← Netlify config + headers
-├── README.md               ← this file (dev docs)
-└── PANDUAN-ADMIN.md        ← admin guide for the friend (Bahasa Indonesia)
+┌─────────────────────────────────────────────────────┐
+│  🏠 Perpustakaan Bebas                    [🌙] [Mulai Baca] │
+├─────────────────────────────────────────────────────┤
+│                                                     │
+│  📚 Perpustakaan Digital · Gratis                   │
+│                                                     │
+│  Pengetahuan untuk awal yang baru.                  │
+│  Kumpulan buku-buku bermanfaat — keterampilan       │
+│  kerja, kewirausahaan, kesehatan mental...          │
+│                                                     │
+│  [ Lihat semua buku → ]  [ Tentang program ]       │
+│                                                     │
+├─────────────────────────────────────────────────────┤
+│  📚 Perpustakaan              🔍 [Cari...]         │
+│  Semua Buku                                        │
+│                                                     │
+│  [Semua] [Keterampilan] [Kewirausahaan]...         │
+│                                                     │
+│  ┌──────┐ ┌──────┐ ┌──────┐ ┌──────┐              │
+│  │ 📖   │ │ 📖   │ │ 📖   │ │ 📖   │              │
+│  │      │ │      │ │      │ │      │              │
+│  │Judul │ │Judul │ │Judul │ │Judul │              │
+│  │ Penulis│ │ Penulis│ │ Penulis│ │ Penulis│              │
+│  └──────┘ └──────┘ └──────┘ └──────┘              │
+└─────────────────────────────────────────────────────┘
 ```
 
-## Deployment to Netlify
+### Halaman Baca Buku
+```
+┌─────────────────────────────────────────────────────┐
+│  ← Kembali       [🌙] [Admin]                      │
+├─────────────────────────────────────────────────────┤
+│                                                     │
+│  KETERAMPILAN KERJA                                 │
+│  Keterampilan Kerja Dasar                            │
+│  Oleh: Pusat Pelatihan Mandiri                       │
+│                                                     │
+│  Buku panduan untuk mempersiapkan diri              │
+│  memasuki dunia kerja...                            │
+│                                                     │
+│  [⬇ Unduh PDF]  [⛶ Layar Penuh]                   │
+│                                                     │
+│  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 45%                │
+│                                                     │
+│  ┌───────────────────────────────────────────┐     │
+│  │  ←  [ Halaman  3 dari 42 ]  →            │     │
+│  │           [−] 100% [+] [Sesuaikan]        │     │
+│  └───────────────────────────────────────────┘     │
+│                                                     │
+│  ┌───────────────────────────────────────────┐     │
+│  │                                           │     │
+│  │          📄 Halaman PDF                   │     │
+│  │          Tampilan buku nyata              │     │
+│  │                                           │     │
+│  └───────────────────────────────────────────┘     │
+└─────────────────────────────────────────────────────┘
+```
 
-### 1. Push to GitHub
+---
 
-Create a new GitHub repo and push the `library/` folder contents to its root.
+## 🛠️ Tech Stack
 
-### 2. Connect to Netlify
+| Komponen | Teknologi |
+|----------|-----------|
+| **Frontend** | Plain HTML + CSS |
+| **Styling** | Tailwind CSS (via CDN) |
+| **PDF Reader** | PDF.js v4 |
+| **CMS** | Decap CMS (Git-based) |
+| **Auth** | Netlify Identity |
+| **Hosting** | Netlify (free tier) |
+| **PDF Storage** | Google Drive / Internet Archive |
 
-1. Sign in to [netlify.com](https://app.netlify.com) (free account)
-2. **Add new site → Import an existing project → GitHub**
-3. Select the repo
-4. Build settings:
-   - Build command: *(leave empty)*
+---
+
+## 🚀 Cara Deploy
+
+### 1. Push ke GitHub
+```bash
+git init
+git add .
+git commit -m "Initial commit"
+git branch -M main
+git remote add origin https://github.com/USERNAME/REPO-NAME.git
+git push -u origin main
+```
+
+### 2. Connect ke Netlify
+1. Buka [app.netlify.com](https://app.netlify.com)
+2. **Add new site** → **Import from Git** → **GitHub**
+3. Pilih repo ini
+4. Settings:
+   - Build command: *(kosongkan)*
    - Publish directory: `.`
 5. Click **Deploy site**
 
-### 3. Enable Netlify Identity (for the admin login)
+### 3. Aktifkan Admin
+1. **Site settings** → **Identity** → **Enable Identity**
+2. **Registration** → **Open**
+3. **Services** → **Git Gateway** → **Enable**
+4. **Identity** → **Invite users** → Masukkan email admin
 
-1. In the Netlify dashboard → **Site configuration → Identity → Enable Identity**
-2. Under **Registration preferences → Open** (or Invite-only if you want stricter control)
-3. Under **Services → Git Gateway → Enable Git Gateway**
+### 4. Update Config
+Edit `admin/config.yml`, ganti:
+```yaml
+site_url: https://YOUR-SITE.netlify.app
+display_url: https://YOUR-SITE.netlify.app
+```
 
-### 4. Invite the admin user (your friend)
+---
 
-1. **Identity → Invite users**
-2. Enter the friend's email
-3. He'll receive an email, set his password, then can log in at `[your-site].netlify.app/admin/`
+## 📁 Struktur Project
 
-### 5. Update `admin/config.yml`
+```
+perpustakaan-bebas/
+├── index.html          # Homepage + daftar buku
+├── book.html           # Halaman baca PDF
+├── sw.js               # Service worker (offline)
+├── netlify.toml        # Netlify config
+├── admin/
+│   ├── index.html      # Decap CMS entry
+│   └── config.yml      # CMS schema
+├── covers/             # Cover buku
+├── data/
+│   └── books.json      # Data buku
+├── README.md           # Dokumentasi utama
+└── PANDUAN-ADMIN.md    # Panduan admin (Bahasa)
+```
 
-Replace `YOUR-SITE.netlify.app` with the actual deployed domain in two places (`site_url` and `display_url`).
+---
 
-## Adding the first batch of books
+## 📝 Cara Menambah Buku (via Admin Panel)
 
-You (the developer) seed the initial books by editing `data/books.json` directly. After that, your friend manages everything through `/admin/`.
+1. Login ke `/admin/`
+2. Klik **Buku** → **Daftar Buku**
+3. Klik **+ Add Buku**
+4. Isi form:
+   - **ID Unik:** slug tanpa spasi (contoh: `keterampilan-kerja-dasar`)
+   - **Judul:** Judul buku
+   - **Penulis:** Nama penulis
+   - **Kategori:** Pilih dari dropdown
+   - **Deskripsi:** 2-3 paragraf
+   - **Cover:** Upload gambar (600×840px)
+   - **URL PDF:** Link Google Drive/Internet Archive
+5. Klik **Save** → **Publish now**
+6. Tunggu 30 detik, buku muncul di website! ✅
 
-Each book object:
+📖 [Panduan lengkap dalam Bahasa Indonesia](./PANDUAN-ADMIN.md)
 
-```json
-{
-  "id": "unique-slug-no-spaces",
-  "title": "Judul Buku",
-  "author": "Nama Penulis",
-  "category": "keterampilan",
-  "description": "Deskripsi singkat...",
-  "cover": "covers/filename.jpg",
-  "pdf_url": "https://drive.google.com/file/d/FILE_ID/view"
+---
+
+## 🔧 Development Lokal
+
+```bash
+# Clone repo
+git clone https://github.com/USERNAME/perpustakaan-bebas.git
+cd perpustakaan-bebas
+
+# Jalankan local server (diperlukan untuk testing)
+python -m http.server 8000
+# Atau
+npx serve .
+
+# Buka http://localhost:8000
+```
+
+---
+
+## 🎨 Customization
+
+### Mengubah Warna / Tema
+Edit CSS variables di `index.html` dan `book.html`:
+```css
+:root {
+  --accent: #3F6B4D;        /* Warna utama (hijau) */
+  --accent-deep: #2D5238;   /* Warna hover */
+  --bg: #FAFAF7;            /* Background */
+  --text: #1A1A1A;          /* Text */
 }
 ```
 
-Valid `category` values:
-- `keterampilan` — Keterampilan Kerja
-- `kewirausahaan` — Kewirausahaan
-- `kesehatan-mental` — Kesehatan Mental
-- `keluarga` — Keluarga & Hubungan
-- `spiritual` — Spiritual
-- `hukum` — Hukum & Hak
-- `pendidikan` — Pendidikan
-- `inspirasi` — Cerita & Inspirasi
+### Menambah Kategori Baru
+1. Edit `index.html` → `CATEGORIES` object
+2. Edit `book.html` → `CATEGORIES` object
+3. Edit `admin/config.yml` → `options` list
 
-To add or rename a category: edit the `CATEGORIES` object in `index.html` and `book.html`, plus the `options` list in `admin/config.yml`.
-
-## PDF storage strategy
-
-The `pdf_url` field accepts any direct PDF URL. The book reader (`book.html`) automatically converts Google Drive share URLs to direct-download URLs.
-
-**Current Setup: Google Drive** (easiest for non-technical admins)
-- Upload PDF → Set "Anyone with link can view" → Copy share link → Paste in admin panel
-- System auto-converts to download URL
-- ⚠️ **Limit:** ~100 downloads/day per file. Keep PDFs under 2 MB to reduce hit count.
-- 📖 [Full Google Drive guide in PANDUAN-ADMIN.md](./PANDUAN-ADMIN.md#11-batasan-google-drive--solusi)
-
-**More durable alternatives:**
-
-1. **Internet Archive (archive.org)** — permanent, free, no download limits. Best for mission-critical books.
-2. **Cloudflare R2** — 10 GB free, fast CDN, no egress fees. Good for scaling.
-3. **Firebase Storage** — 5 GB free, simple setup with this stack.
-
-The system is **storage-agnostic** — switching providers means just changing URLs in the CMS, no code changes.
-
-## PDF compression (important)
-
-A4 illustrated PDFs from InDesign/Word often export at 20-80 MB. Compress aggressively before uploading:
-
-- **Web tools:** [smallpdf.com](https://smallpdf.com/compress-pdf), [ilovepdf.com](https://www.ilovepdf.com/compress_pdf)
-- **Desktop:** Adobe Acrobat → Save As Other → Reduced Size PDF
-- **CLI (batch):** `ghostscript -sDEVICE=pdfwrite -dPDFSETTINGS=/ebook -o output.pdf input.pdf`
-
-**Target: under 5 MB per book.** This is critical for users on mobile data plans.
-
-## Local development
-
-The site is plain HTML — just open `index.html` in a browser. For testing fetch behavior (which requires a server, not file://), use any static server:
-
-```bash
-# Python 3
-python -m http.server 8000
-
-# Node
-npx serve .
+### Mengubah Font
+Ganti Google Fonts link di `<head>`:
+```html
+<link href="https://fonts.googleapis.com/css2?family=YOUR+FONT&display=swap" rel="stylesheet">
 ```
 
-Then visit `http://localhost:8000`.
+---
 
-## Privacy & accessibility commitments
+## 🔒 Privacy & Accessibility
 
-This site deliberately:
+- ✅ **Tanpa tracking** — Tidak ada Google Analytics, pixel, atau widget social
+- ✅ **Tanpa login pembaca** — Siapa saja bisa baca langsung
+- ✅ **WCAG AA compliant** — Kontras warna yang baik
+- ✅ **Mobile-friendly** — Berfungsi di HP lawas
+- ✅ **Low bandwidth** — PDF di bawah 5 MB, lazy loading
 
-- Does **NOT** include Google Analytics or any tracking pixels
-- Does **NOT** require login or email capture for readers
-- Does **NOT** include social share widgets that track
-- **DOES** use minimum 16-18px body text (large for accessibility)
-- **DOES** maintain WCAG AA color contrast
-- **DOES** work on low-end devices (no React/Vue, minimal JS)
-- **DOES** lazy-load images and the PDF viewer
+---
 
-If you add features, preserve these commitments. The audience deserves dignity and privacy.
+## 🤝 Kontribusi
 
-## Future enhancements (ideas, not required)
+Kontribusi diterima! Silakan:
+1. Fork repo ini
+2. Buat branch baru (`git checkout -b fitur-baru`)
+3. Commit perubahan (`git commit -m 'Menambah fitur baru'`)
+4. Push ke branch (`git push origin fitur-baru`)
+5. Buat Pull Request
 
-- Service worker for offline reading after first visit
-- Reading progress bar at the top of book pages
-- "Continue reading" widget on the homepage (using localStorage)
-- Multi-language toggle (Bahasa / English)
-- Audio narration links (TTS or recorded)
-- Print-friendly book detail pages
-- Dark mode toggle
-- RSS feed for new books
+---
 
-## Maintenance contract with your friend
+## 📜 License
 
-Hand him `PANDUAN-ADMIN.md` (Bahasa Indonesia) — that's all he needs to manage books on his own.
+MIT License — bebas digunakan untuk keperluan apapun.
 
-For anything beyond content management (design changes, new features, category additions), he comes to you.
+---
 
-## License
+## 🙏 Credits
 
-The website code is yours/your friend's to license as you see fit. The book content is each respective author's — make sure your friend has rights to redistribute each PDF before adding it.
+- **Designed for:** Komunitas yang membutuhkan akses ke pengetahuan gratis
+- **Icons:** Heroicons
+- **Fonts:** Plus Jakarta Sans & Fraunces (Google Fonts)
+- **PDF Viewer:** Mozilla PDF.js
 
-For the books themselves, consider a Creative Commons declaration in the footer if appropriate.
+---
+
+<p align="center">
+  Dibuat dengan ❤️ untuk dunia yang lebih baik
+</p>
