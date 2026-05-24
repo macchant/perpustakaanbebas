@@ -7,8 +7,8 @@ public_folder: "covers"
 
 locale: "id"
 
-site_url: https://YOUR-SITE.netlify.app
-display_url: https://YOUR-SITE.netlify.app
+site_url: https://bebasbaca.netlify.app/
+display_url: https://bebasbaca.netlify.app/
 logo_url: ""
 
 collections:
