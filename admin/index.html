@@ -3,12 +3,458 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Panel Admin — Perpustakaan Bebas</title>
-<link href="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.css" rel="stylesheet">
+<title>Admin Panel — Perpustakaan Bebas</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  * { font-family: 'Plus Jakarta Sans', sans-serif; }
+  body { background: #1a1a2e; color: #eee; }
+  .card { background: #16213e; border: 1px solid #0f3460; }
+  .btn { transition: all 0.2s; }
+  .btn:hover { transform: translateY(-1px); }
+  .btn:active { transform: scale(0.98); }
+  input, textarea, select { background: #0f3460 !important; border-color: #1a1a2e !important; color: #fff !important; }
+  input:focus, textarea:focus, select:focus { border-color: #e94560 !important; outline: none; }
+  .tag { background: #e94560; }
+  .preview-cover { background: #0f3460; aspect-ratio: 1/1.4; }
+</style>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: { primary: '#e94560', dark: '#1a1a2e', card: '#16213e', accent: '#0f3460' }
+    }
+  }
+}
+</script>
 </head>
-<body>
-<!-- Decap CMS injects the admin UI here -->
-<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-<script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+<body class="min-h-screen">
+
+  <!-- Header -->
+  <header class="bg-dark/80 backdrop-blur border-b border-accent sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+      <div>
+        <h1 class="text-xl font-bold text-white">📚 Perpustakaan Bebas</h1>
+        <p class="text-sm text-gray-400">Admin Panel — Kelola Buku</p>
+      </div>
+      <div class="flex gap-3">
+        <button onclick="showPreview()" class="btn bg-accent hover:bg-primary text-white px-4 py-2 rounded-lg text-sm font-medium">
+          👁️ Lihat Preview
+        </button>
+        <button onclick="exportJSON()" class="btn bg-primary hover:bg-pink-600 text-white px-4 py-2 rounded-lg text-sm font-medium">
+          📋 Export JSON
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 py-8">
+
+    <!-- Stats -->
+    <div class="grid grid-cols-3 gap-4 mb-8">
+      <div class="card rounded-xl p-6 text-center">
+        <div class="text-3xl font-bold text-primary" id="totalBooks">0</div>
+        <div class="text-gray-400 text-sm mt-1">Total Buku</div>
+      </div>
+      <div class="card rounded-xl p-6 text-center">
+        <div class="text-3xl font-bold text-green-400" id="totalCategories">0</div>
+        <div class="text-gray-400 text-sm mt-1">Kategori</div>
+      </div>
+      <div class="card rounded-xl p-6 text-center">
+        <div class="text-3xl font-bold text-yellow-400" id="lastUpdated">-</div>
+        <div class="text-gray-400 text-sm mt-1">Terakhir Update</div>
+      </div>
+    </div>
+
+    <!-- Add Book Form -->
+    <div class="card rounded-xl p-6 mb-8">
+      <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
+        <span class="tag px-2 py-0.5 rounded text-xs">+</span>
+        Tambah / Edit Buku
+      </h2>
+
+      <div class="grid md:grid-cols-2 gap-6">
+        <!-- Left: Form -->
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm text-gray-400 mb-1">ID Unik (tanpa spasi, huruf kecil)</label>
+            <input type="text" id="bookId" placeholder="contoh: membangun-kembali-hidup" class="w-full px-4 py-2 rounded-lg border">
+          </div>
+          <div>
+            <label class="block text-sm text-gray-400 mb-1">Judul Buku</label>
+            <input type="text" id="bookTitle" placeholder="Membangun Kembali Hidup" class="w-full px-4 py-2 rounded-lg border">
+          </div>
+          <div>
+            <label class="block text-sm text-gray-400 mb-1">Penulis</label>
+            <input type="text" id="bookAuthor" placeholder="Nama Penulis" class="w-full px-4 py-2 rounded-lg border">
+          </div>
+          <div>
+            <label class="block text-sm text-gray-400 mb-1">Kategori</label>
+            <select id="bookCategory" class="w-full px-4 py-2 rounded-lg border">
+              <option value="">Pilih Kategori</option>
+              <option value="keterampilan">Keterampilan Kerja</option>
+              <option value="kewirausahaan">Kewirausahaan</option>
+              <option value="kesehatan-mental">Kesehatan Mental</option>
+              <option value="keluarga">Keluarga & Hubungan</option>
+              <option value="spiritual">Spiritual</option>
+              <option value="hukum">Hukum & Hak</option>
+              <option value="pendidikan">Pendidikan</option>
+              <option value="inspirasi">Cerita & Inspirasi</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm text-gray-400 mb-1">URL Cover (gambar)</label>
+            <input type="text" id="bookCover" placeholder="covers/nama-file.jpg" class="w-full px-4 py-2 rounded-lg border">
+          </div>
+          <div>
+            <label class="block text-sm text-gray-400 mb-1">URL PDF (Google Drive)</label>
+            <input type="text" id="bookPdf" placeholder="https://drive.google.com/file/d/..." class="w-full px-4 py-2 rounded-lg border">
+          </div>
+          <div>
+            <label class="block text-sm text-gray-400 mb-1">Deskripsi</label>
+            <textarea id="bookDesc" rows="4" placeholder="Deskripsi buku di sini..." class="w-full px-4 py-2 rounded-lg border"></textarea>
+          </div>
+
+          <div class="flex gap-3 pt-2">
+            <button onclick="addBook()" class="btn bg-primary hover:bg-pink-600 text-white px-6 py-2 rounded-lg font-medium">
+              ✓ Simpan Buku
+            </button>
+            <button onclick="clearForm()" class="btn bg-accent hover:bg-gray-600 text-white px-6 py-2 rounded-lg font-medium">
+              🔄 Clear
+            </button>
+          </div>
+        </div>
+
+        <!-- Right: Cover Preview -->
+        <div>
+          <label class="block text-sm text-gray-400 mb-2">Preview Cover</label>
+          <div id="coverPreview" class="preview-cover rounded-xl flex items-center justify-center text-gray-500 border-2 border-dashed border-gray-600">
+            <div class="text-center">
+              <div class="text-4xl mb-2">📖</div>
+              <div class="text-sm">Cover Preview</div>
+            </div>
+          </div>
+          <p class="text-xs text-gray-500 mt-2">Upload cover ke folder "covers" di GitHub, lalu masukkan nama filenya.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Book List -->
+    <div class="card rounded-xl p-6">
+      <h2 class="text-lg font-semibold mb-4">📚 Daftar Buku</h2>
+      <div id="bookList" class="space-y-3">
+        <!-- Books will be listed here -->
+      </div>
+      <div id="emptyList" class="text-center py-12 text-gray-500">
+        <div class="text-4xl mb-3">📭</div>
+        <p>Belum ada buku. Tambahkan buku baru di atas!</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- Preview Modal -->
+  <div id="previewModal" class="fixed inset-0 bg-black/80 z-50 hidden items-center justify-center p-4">
+    <div class="bg-dark card rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-auto">
+      <div class="p-4 border-b border-accent flex justify-between items-center">
+        <h3 class="font-semibold">📄 Preview JSON (books.json)</h3>
+        <button onclick="closePreview()" class="text-gray-400 hover:text-white">✕</button>
+      </div>
+      <div class="p-4">
+        <pre id="jsonPreview" class="bg-accent rounded-lg p-4 text-sm overflow-x-auto whitespace-pre-wrap max-h-[60vh] overflow-y-auto"></pre>
+        <div class="mt-4 flex gap-3">
+          <button onclick="copyToClipboard()" class="btn bg-primary hover:bg-pink-600 text-white px-4 py-2 rounded-lg text-sm font-medium">
+            📋 Copy to Clipboard
+          </button>
+          <button onclick="closePreview()" class="btn bg-accent hover:bg-gray-600 text-white px-4 py-2 rounded-lg text-sm font-medium">
+            Tutup
+          </button>
+        </div>
+        <div class="mt-4 p-3 bg-yellow-900/30 rounded-lg text-sm border border-yellow-600">
+          <p class="font-semibold text-yellow-400 mb-2">📝 Langkah Selanjutnya:</p>
+          <ol class="list-decimal list-inside space-y-1 text-gray-300">
+            <li>Copy JSON di atas</li>
+            <li>Buka: <a href="https://github.com/macchant/perpustakaanbebas/edit/main/data/books.json" target="_blank" class="text-primary hover:underline">github.com/macchant/perpustakaanbebas/edit/main/data/books.json</a></li>
+            <li>Delete semua isi, paste JSON yang sudah dicopy</li>
+            <li>Klik "Commit changes" (tombol hijau di bawah)</li>
+            <li>Tunggu 1-2 menit, website akan update otomatis!</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Modal -->
+  <div id="editModal" class="fixed inset-0 bg-black/80 z-50 hidden items-center justify-center p-4">
+    <div class="bg-dark card rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-auto">
+      <div class="p-4 border-b border-accent flex justify-between items-center">
+        <h3 class="font-semibold">✏️ Edit Buku</h3>
+        <button onclick="closeEdit()" class="text-gray-400 hover:text-white">✕</button>
+      </div>
+      <div class="p-4 space-y-4" id="editFormContent">
+        <!-- Edit form will be loaded here -->
+      </div>
+    </div>
+  </div>
+
+<script>
+// Sample data
+let books = [
+  {
+    "id": "membangun-kembali-hidup",
+    "title": "Membangun Kembali Hidup",
+    "author": "Tim Yayasan Harapan",
+    "category": "inspirasi",
+    "description": "Panduan praktis untuk memulai kembali setelah masa sulit. Berisi langkah-langkah konkret untuk membangun rutinitas, hubungan, dan tujuan baru.\n\nBuku ini cocok untuk siapa saja yang sedang berada di titik balik hidup dan membutuhkan peta sederhana untuk melangkah maju.",
+    "cover": "covers/sample-1.svg",
+    "pdf_url": "https://www.africau.edu/images/default/sample.pdf"
+  },
+  {
+    "id": "keterampilan-kerja-dasar",
+    "title": "Keterampilan Kerja Dasar",
+    "author": "Pusat Pelatihan Mandiri",
+    "category": "keterampilan",
+    "description": "Buku panduan untuk mempersiapkan diri memasuki dunia kerja. Mulai dari membuat CV, menghadapi wawancara, hingga membangun etos kerja yang baik.\n\nDilengkapi dengan ilustrasi dan contoh nyata yang mudah dipahami.",
+    "cover": "covers/sample-2.svg",
+    "pdf_url": "https://www.africau.edu/images/default/sample.pdf"
+  },
+  {
+    "id": "memulai-usaha-kecil",
+    "title": "Memulai Usaha Kecil dari Nol",
+    "author": "Komunitas Wirausaha Indonesia",
+    "category": "kewirausahaan",
+    "description": "Panduan lengkap untuk memulai bisnis kecil dengan modal terbatas. Mencakup ide usaha, manajemen keuangan sederhana, hingga strategi pemasaran lokal.",
+    "cover": "covers/sample-3.svg",
+    "pdf_url": "https://www.africau.edu/images/default/sample.pdf"
+  }
+];
+
+const categories = {
+  'keterampilan': 'Keterampilan Kerja',
+  'kewirausahaan': 'Kewirausahaan',
+  'kesehatan-mental': 'Kesehatan Mental',
+  'keluarga': 'Keluarga & Hubungan',
+  'spiritual': 'Spiritual',
+  'hukum': 'Hukum & Hak',
+  'pendidikan': 'Pendidikan',
+  'inspirasi': 'Cerita & Inspirasi'
+};
+
+const categoryColors = {
+  'keterampilan': 'bg-blue-600',
+  'kewirausahaan': 'bg-green-600',
+  'kesehatan-mental': 'bg-purple-600',
+  'keluarga': 'bg-pink-600',
+  'spiritual': 'bg-yellow-600',
+  'hukum': 'bg-red-600',
+  'pendidikan': 'bg-indigo-600',
+  'inspirasi': 'bg-orange-600'
+};
+
+function renderBooks() {
+  const list = document.getElementById('bookList');
+  const empty = document.getElementById('emptyList');
+
+  if (books.length === 0) {
+    list.innerHTML = '';
+    empty.classList.remove('hidden');
+  } else {
+    empty.classList.add('hidden');
+    list.innerHTML = books.map((book, index) => `
+      <div class="bg-accent/50 rounded-lg p-4 flex items-center gap-4 hover:bg-accent transition">
+        <div class="w-12 h-16 bg-dark rounded overflow-hidden flex-shrink-0">
+          ${book.cover ? `<img src="${book.cover}" class="w-full h-full object-cover" onerror="this.parentElement.innerHTML='📖'">` : '<div class="w-full h-full flex items-center justify-center text-xl">📖</div>'}
+        </div>
+        <div class="flex-1 min-w-0">
+          <h4 class="font-medium truncate">${book.title}</h4>
+          <p class="text-sm text-gray-400 truncate">${book.author || 'Tanpa penulis'}</p>
+          <span class="inline-block mt-1 text-xs px-2 py-0.5 rounded ${categoryColors[book.category] || 'bg-gray-600'}">${categories[book.category] || book.category}</span>
+        </div>
+        <div class="flex gap-2 flex-shrink-0">
+          <button onclick="editBook(${index})" class="btn bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm">✏️</button>
+          <button onclick="deleteBook(${index})" class="btn bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm">🗑️</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // Update stats
+  document.getElementById('totalBooks').textContent = books.length;
+  document.getElementById('totalCategories').textContent = Object.keys(categories).length;
+  document.getElementById('lastUpdated').textContent = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
+}
+
+function addBook() {
+  const id = document.getElementById('bookId').value.trim().toLowerCase().replace(/\s+/g, '-');
+  const title = document.getElementById('bookTitle').value.trim();
+  const author = document.getElementById('bookAuthor').value.trim();
+  const category = document.getElementById('bookCategory').value;
+  const cover = document.getElementById('bookCover').value.trim();
+  const pdf = document.getElementById('bookPdf').value.trim();
+  const desc = document.getElementById('bookDesc').value.trim();
+
+  if (!id || !title || !category) {
+    alert('❌ ID, Judul, dan Kategori harus diisi!');
+    return;
+  }
+
+  // Check if ID exists
+  const existingIndex = books.findIndex(b => b.id === id);
+
+  const newBook = {
+    id,
+    title,
+    author,
+    category,
+    description: desc,
+    cover,
+    pdf_url: pdf
+  };
+
+  if (existingIndex >= 0) {
+    books[existingIndex] = newBook;
+    alert('✅ Buku berhasil diupdate!');
+  } else {
+    books.push(newBook);
+    alert('✅ Buku berhasil ditambahkan!');
+  }
+
+  clearForm();
+  renderBooks();
+}
+
+function editBook(index) {
+  const book = books[index];
+  document.getElementById('editFormContent').innerHTML = `
+    <div class="space-y-4">
+      <div>
+        <label class="block text-sm text-gray-400 mb-1">ID Unik</label>
+        <input type="text" id="editId" value="${book.id}" class="w-full px-4 py-2 rounded-lg border" readonly>
+      </div>
+      <div>
+        <label class="block text-sm text-gray-400 mb-1">Judul</label>
+        <input type="text" id="editTitle" value="${book.title}" class="w-full px-4 py-2 rounded-lg border">
+      </div>
+      <div>
+        <label class="block text-sm text-gray-400 mb-1">Penulis</label>
+        <input type="text" id="editAuthor" value="${book.author || ''}" class="w-full px-4 py-2 rounded-lg border">
+      </div>
+      <div>
+        <label class="block text-sm text-gray-400 mb-1">Kategori</label>
+        <select id="editCategory" class="w-full px-4 py-2 rounded-lg border">
+          ${Object.entries(categories).map(([val, label]) =>
+            `<option value="${val}" ${val === book.category ? 'selected' : ''}>${label}</option>`
+          ).join('')}
+        </select>
+      </div>
+      <div>
+        <label class="block text-sm text-gray-400 mb-1">Cover URL</label>
+        <input type="text" id="editCover" value="${book.cover || ''}" class="w-full px-4 py-2 rounded-lg border">
+      </div>
+      <div>
+        <label class="block text-sm text-gray-400 mb-1">PDF URL</label>
+        <input type="text" id="editPdf" value="${book.pdf_url || ''}" class="w-full px-4 py-2 rounded-lg border">
+      </div>
+      <div>
+        <label class="block text-sm text-gray-400 mb-1">Deskripsi</label>
+        <textarea id="editDesc" rows="3" class="w-full px-4 py-2 rounded-lg border">${book.description || ''}</textarea>
+      </div>
+      <div class="flex gap-3 pt-2">
+        <button onclick="saveEdit(${index})" class="btn bg-primary hover:bg-pink-600 text-white px-6 py-2 rounded-lg font-medium">✓ Simpan</button>
+        <button onclick="closeEdit()" class="btn bg-accent hover:bg-gray-600 text-white px-6 py-2 rounded-lg font-medium">Batal</button>
+      </div>
+    </div>
+  `;
+  document.getElementById('editModal').classList.remove('hidden');
+  document.getElementById('editModal').classList.add('flex');
+}
+
+function saveEdit(index) {
+  books[index] = {
+    id: document.getElementById('editId').value,
+    title: document.getElementById('editTitle').value,
+    author: document.getElementById('editAuthor').value,
+    category: document.getElementById('editCategory').value,
+    cover: document.getElementById('editCover').value,
+    pdf_url: document.getElementById('editPdf').value,
+    description: document.getElementById('editDesc').value
+  };
+  closeEdit();
+  renderBooks();
+  alert('✅ Buku berhasil diupdate!');
+}
+
+function deleteBook(index) {
+  if (confirm('🗑️ Yakin hapus "' + books[index].title + '"?')) {
+    books.splice(index, 1);
+    renderBooks();
+    alert('🗑️ Buku berhasil dihapus!');
+  }
+}
+
+function clearForm() {
+  document.getElementById('bookId').value = '';
+  document.getElementById('bookTitle').value = '';
+  document.getElementById('bookAuthor').value = '';
+  document.getElementById('bookCategory').value = '';
+  document.getElementById('bookCover').value = '';
+  document.getElementById('bookPdf').value = '';
+  document.getElementById('bookDesc').value = '';
+  updateCoverPreview();
+}
+
+function updateCoverPreview() {
+  const coverUrl = document.getElementById('bookCover').value;
+  const preview = document.getElementById('coverPreview');
+
+  if (coverUrl) {
+    preview.innerHTML = `<img src="${coverUrl}" class="w-full h-full object-cover rounded-xl" onerror="this.parentElement.innerHTML='<div class=\\'text-center\\'><div class=\\'text-4xl mb-2\\'>📖</div><div class=\\'text-sm text-red-400\\'>Cover tidak ditemukan</div></div>'">`;
+  } else {
+    preview.innerHTML = `<div class="text-center"><div class="text-4xl mb-2">📖</div><div class="text-sm">Cover Preview</div></div>`;
+  }
+}
+
+function showPreview() {
+  const json = JSON.stringify({ books }, null, 2);
+  document.getElementById('jsonPreview').textContent = json;
+  document.getElementById('previewModal').classList.remove('hidden');
+  document.getElementById('previewModal').classList.add('flex');
+}
+
+function closePreview() {
+  document.getElementById('previewModal').classList.add('hidden');
+  document.getElementById('previewModal').classList.remove('flex');
+}
+
+function closeEdit() {
+  document.getElementById('editModal').classList.add('hidden');
+  document.getElementById('editModal').classList.remove('flex');
+}
+
+function exportJSON() {
+  showPreview();
+}
+
+function copyToClipboard() {
+  const json = JSON.stringify({ books }, null, 2);
+  navigator.clipboard.writeText(json).then(() => {
+    alert('📋 JSON berhasil dicopy ke clipboard!');
+  }).catch(() => {
+    // Fallback
+    const textArea = document.createElement('textarea');
+    textArea.value = json;
+    document.body.appendChild(textArea);
+    textArea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textArea);
+    alert('📋 JSON berhasil dicopy!');
+  });
+}
+
+// Listen to cover input for preview
+document.getElementById('bookCover').addEventListener('input', updateCoverPreview);
+
+// Init
+renderBooks();
+</script>
 </body>
 </html>
