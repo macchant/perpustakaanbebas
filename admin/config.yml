@@ -1,6 +1,5 @@
 backend:
-  name: github
-  repo: macchant/perpustakaanbebas
+  name: git-gateway
   branch: main
   commit_message: "Update books via CMS"
   open_authoring: false
