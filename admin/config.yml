@@ -1,7 +1,6 @@
 backend:
   name: git-gateway
   branch: main
-  commit_message: "Update books via CMS"
 
 media_folder: "covers"
 public_folder: "covers"
